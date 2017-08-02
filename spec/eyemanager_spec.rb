@@ -1,24 +1,5 @@
 require "spec_helper"
 
-=begin
-TODO:
-eye load config_file
-eye start param
-
-eye stop param
-
-eye i -j
-returns something like this:
-{"subtree":[{"name":"test","type":"application","subtree":[{"name":"__default__","type":"group","subtree":[{"name":"sample","state":"unmonitored","type":"process","resources":{"memory":null,"cpu":null,"start_time":null,"pid":null},"state_changed_at":1501570056,"state_reason":"stop by user"}]}],"debug":null},{"name":"test2","type":"application","subtree":[{"name":"__default__","type":"group","subtree":[{"name":"sample","state":"up","type":"process","resources":{"memory":19062784,"cpu":0.0,"start_time":1501570046,"pid":11731},"state_changed_at":1501570049,"state_reason":"monitor by user"}]}],"debug":null}]}
-
-destroy:
-eye q -s
-
-TODO: need a test that starts another app without config
-then after stopping one of these, query each verify status on each
-
-=end
-
 RSpec.describe EyeManager do
   it "has a version number" do
     expect(EyeManager::VERSION).not_to be nil
