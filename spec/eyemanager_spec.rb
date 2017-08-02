@@ -124,6 +124,10 @@ RSpec.describe EyeManager do
   end
   
   describe ".list_apps" do
+    it "should return empty list if Eye is not running" do 
+	  expect(EyeManager.list_apps).to match_array []
+    end 
+    
     it "should list the apps" do
       EyeManager.start config: 'spec/eye.test.rb', application: 'test'
       EyeManager.start config: 'spec/eye.test2.rb', application: 'test2'

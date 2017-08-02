@@ -99,6 +99,8 @@ module EyeManager
               .select{|a| a["name"] == "#{app}" &&
               a["type"] == "application"} :
           status_apps
+    rescue JSON::ParserError => e
+	  []
     end
 
     def eye_status_groups_filtered_by group, app_groups
