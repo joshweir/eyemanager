@@ -27,6 +27,10 @@ module EyeManager
           /^Eye quit|socket\(.+\) not found/.match(output)
     end
 
+    def list_apps
+      eye_status_apps_filtered_by.map{|a| a['name']}
+    end
+
     private
 
     def validate_start_params params={}
@@ -88,7 +92,7 @@ module EyeManager
       'unknown'
     end
 
-    def eye_status_apps_filtered_by app
+    def eye_status_apps_filtered_by app=nil
       status_apps = JSON.parse(`eye i -j`)['subtree']
       app.to_s.length > 0 ?
           status_apps
