@@ -67,9 +67,26 @@ If your process is within a `group` block, ensure to include the `group`:
 EyeManager.stop application: 'test2', group: 'samples', process: 'sample'
 ```
 
+### List Eye Apps
+
+List the applications being monitored by Eye:
+
+```ruby
+EyeManager.list_apps
+# -> ['app1', 'app2']
+```
+
+uses:
+
+```bash
+eye i -j
+```
+
+to extract the `applications` being currently monitored.
+
 ### Destroy
 
-Stop Eye processes and quite Eye:
+Stop Eye processes and quit Eye:
 
 ```ruby
 EyeManager.destroy
