@@ -129,12 +129,96 @@ RSpec.describe EyeManager do
           .to raise_error /process is required/
     end
 
-    it "should return the status for a queried application:process" do
+    it "returns the status for a queried process" do
       allow(EyeManager)
           .to receive(:`)
                   .with("eye i -j")
                   .and_return(eye_status_json_sample)
       expect(EyeManager.status process: 'sample').to eq 'up'
+    end
+
+    it "returns the status for a queried application:process" do
+      allow(EyeManager)
+          .to receive(:`)
+                  .with("eye i -j")
+                  .and_return(eye_status_json_sample)
+      expect(EyeManager.status application: 'test',
+                               process: 'sample').to eq 'up'
+    end
+
+    it "returns the status for a queried application:group:process" do
+      allow(EyeManager)
+          .to receive(:`)
+                  .with("eye i -j")
+                  .and_return(eye_status_json_sample)
+      expect(EyeManager.status application: 'test2',
+                               group: 'samples',
+                               process: 'sample').to eq 'starting'
+    end
+
+    it "returns unknown if eye doesn't know about the queried process" do
+      allow(EyeManager)
+          .to receive(:`)
+                  .with("eye i -j")
+                  .and_return(eye_status_json_sample)
+      expect(EyeManager.status application: 'test',
+                               process: 'sampleunknown').to eq 'unknown'
+    end
+
+    it "returns unknown if the eye command output is not JSON" do
+      allow(EyeManager)
+          .to receive(:`)
+                  .with("eye i -j")
+                  .and_return("this is not json")
+      expect(EyeManager.status application: 'test',
+                               process: 'sample').to eq 'unknown'
+    end
+  end
+
+  describe ".destroy" do
+    it "raises exception if eye stop system call does not output expected message" do
+      allow(EyeManager)
+          .to receive(:`)
+                  .with("eye q -s")
+                  .and_return("unexpected output message")
+      expect{EyeManager.destroy}
+          .to raise_exception /Eye destroy failed. Command: eye q -s./
+    end
+
+    it "calls eye q -s and does not throw exception when " +
+           "command output contains 'Eye quit'" do
+      allow(EyeManager)
+          .to receive(:`)
+                  .with("eye q -s")
+                  .and_return("Eye quit")
+      EyeManager.destroy
+    end
+
+    it "calls eye q -s and does not throw exception when " +
+           "command output contains 'socket(*) not found'" do
+      allow(EyeManager)
+          .to receive(:`)
+                  .with("eye q -s")
+                  .and_return("socket(/home/resrev/.eye/sock) not found")
+      EyeManager.destroy
+    end
+  end
+
+  describe ".list_apps" do
+    it "issues eye i -j command to system and extracts the apps from returned json" do
+      allow(EyeManager)
+          .to receive(:`)
+                  .with("eye i -j")
+                  .and_return(eye_status_json_sample)
+      expect(EyeManager.list_apps).to eq ['test', 'test2']
+    end
+
+    it "returns an empty array if eye i -j returns invalid json" do
+      allow(EyeManager)
+          .to receive(:`)
+                  .with("eye i -j")
+                  .and_return("invalid json")
+      expect(EyeManager.list_apps).to eq []
     end
   end
 
@@ -177,7 +261,7 @@ RSpec.describe EyeManager do
                 "subtree": [
                   {
                     "name": "sample",
-                    "state": "up",
+                    "state": "starting",
                     "type": "process",
                     "resources": {
                       "memory": 14774272,
@@ -196,60 +280,4 @@ RSpec.describe EyeManager do
         ]
       })
   end
-
-=begin
-
-  {"subtree":[{"name":"test","type":"application","subtree":[{"name":"__default__","type":"group","subtree":[{"name":"sample","state":"up","type":"process","resources":{"memory":14872576,"cpu":0.0,"start_time":1503188982,"pid":6261},"state_changed_at":1503188985,"state_reason":"monitor by user"}]}],"debug":null},{"name":"test2","type":"application","subtree":[{"name":"samples","type":"group","subtree":[{"name":"sample","state":"up","type":"process","resources":{"memory":14774272,"cpu":0.0,"start_time":1503188995,"pid":6276},"state_changed_at":1503188997,"state_reason":"monitor by user"}]}],"debug":null}]}
-
-
-  describe ".status" do
-    it "should require the :process param" do
-      expect{EyeManager.status application: 'test'}
-          .to raise_error /process is required/
-    end
-
-    it "should return unknown if eye does not know about the " +
-           "application, group and/or process" do
-      expect(EyeManager.status(application: 'testunknown', process: 'sample'))
-          .to eq 'unknown'
-      expect(EyeManager.status(application: 'test', process: 'sampleunknown'))
-          .to eq 'unknown'
-    end
-
-    it "should return the status" do
-      EyeManager.destroy
-      expect(EyeManager.status(application: 'test', process: 'sample'))
-          .to eq 'unknown'
-      EyeManager.start config: 'spec/eye.test.rb', application: 'test'
-      sleep 0.5
-      expect(EyeManager.status(application: 'test', process: 'sample'))
-          .to match /up|starting/
-    end
-  end
-
-  describe ".destroy" do
-    it "should stop eye" do
-      EyeManager.start config: 'spec/eye.test.rb', application: 'test'
-      sleep 0.5
-      expect(EyeManager.status(application: 'test', process: 'sample'))
-          .to match /up|starting/
-      EyeManager.destroy
-      expect(EyeManager.status(application: 'test', process: 'sample'))
-          .to eq 'unknown'
-    end
-  end
-  
-  describe ".list_apps" do
-    it "should return empty list if Eye is not running" do 
-	  expect(EyeManager.list_apps).to match_array []
-    end 
-    
-    it "should list the apps" do
-      EyeManager.start config: 'spec/eye.test.rb', application: 'test'
-      EyeManager.start config: 'spec/eye.test2.rb', application: 'test2'
-      sleep 0.5
-      expect(EyeManager.list_apps).to match_array ['test','test2']
-    end
-  end
-=end
 end
