@@ -40,10 +40,8 @@ eye start test
 This: 
 
 ```ruby
-EyeManager.stop application: 'test', 
-  process: 'sample'
-EyeManager.stop application: 'test2', 
-  group: 'samples', process: 'sample'  
+EyeManager.stop application: 'test', process: 'sample'
+EyeManager.stop application: 'test2', group: 'samples', process: 'sample'  
 ```
 
 is equivelant to: 
@@ -58,8 +56,7 @@ eye stop test:samples:sample
 This: 
 
 ```ruby
-EyeManager.status application: 'test', 
-  process: 'sample'
+EyeManager.status application: 'test', process: 'sample'
 ```
 
 will retrieve the state of the `test` application's `sample` process.
@@ -67,8 +64,7 @@ will retrieve the state of the `test` application's `sample` process.
 If your process is within a `group` block, ensure to include the `group`:
 
 ```ruby
-EyeManager.stop application: 'test2', 
-  group: 'samples', process: 'sample'
+EyeManager.stop application: 'test2', group: 'samples', process: 'sample'
 ```
 
 ### Destroy

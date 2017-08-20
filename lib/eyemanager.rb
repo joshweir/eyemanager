@@ -2,6 +2,8 @@ require "eyemanager/version"
 require "json"
 
 module EyeManager
+  EyeLoadFailed = Class.new(StandardError)
+
   class << self
     def start params={}
       validate_start_params params
@@ -49,7 +51,8 @@ module EyeManager
     def load_config_and_verify config
       cmd = "eye load #{config}"
       output = `#{cmd}`
-      raise "Eye load failed to load config. " +
+      raise EyeLoadFailed,
+            "Eye load failed to load config. " +
                 "Command: #{cmd}. Output: #{output}." unless
           /Config loaded/.match(output)
     end
