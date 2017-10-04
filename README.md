@@ -4,6 +4,11 @@ Ruby wrapper for the [Eye process monitoring tool command line interface](https:
 
 ## Installation
 
+Firstly install sigar: 
+
+    $ gem install sigar -- --with-cppflags="-fgnu89-inline"
+
+Then,
 Add this line to your application's Gemfile:
 
 ```ruby
@@ -16,6 +21,7 @@ And then execute:
 
 Or install it yourself as:
 
+    $ gem install sigar -- --with-cppflags="-fgnu89-inline"
     $ gem install eyemanager
 
 ## Usage
