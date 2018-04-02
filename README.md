@@ -1,10 +1,12 @@
 # Eyemanager
 
+[![Build Status](https://travis-ci.org/joshweir/eyemanager.svg?branch=master)](https://travis-ci.org/joshweir/eyemanager) [![Coverage Status](https://coveralls.io/repos/github/joshweir/eyemanager/badge.svg?branch=master)](https://coveralls.io/github/joshweir/eyemanager?branch=master)
+
 Ruby wrapper for the [Eye process monitoring tool command line interface](https://github.com/kostya/eye#commands).
 
 ## Installation
 
-Firstly install sigar: 
+Firstly install sigar:
 
     $ gem install sigar -- --with-cppflags="-fgnu89-inline"
 
@@ -28,13 +30,13 @@ Or install it yourself as:
 
 ### Start
 
-This: 
+This:
 
 ```ruby
 EyeManager.start config: 'eye.test.rb', application: 'test'
 ```
 
-is equivelant to: 
+is equivelant to:
 
 ```bash
 eye load eye.test.rb
@@ -43,14 +45,14 @@ eye start test
 
 ### Stop
 
-This: 
+This:
 
 ```ruby
 EyeManager.stop application: 'test', process: 'sample'
 EyeManager.stop application: 'test2', group: 'samples', process: 'sample'  
 ```
 
-is equivelant to: 
+is equivelant to:
 
 ```bash
 eye stop test:sample
@@ -59,7 +61,7 @@ eye stop test:samples:sample
 
 ### Status
 
-This: 
+This:
 
 ```ruby
 EyeManager.status application: 'test', process: 'sample'
@@ -112,4 +114,3 @@ Bug reports and pull requests are welcome on GitHub at https://github.com/joshwe
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
