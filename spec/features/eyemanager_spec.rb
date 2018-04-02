@@ -107,7 +107,7 @@ RSpec.describe EyeManager do
           .to match /up|starting/
       expect(EyeManager.status(application: 'test2', group: 'samples',
                                process: 'sample'))
-          .to match /unmonitored/
+          .to match /unmonitored|stopping/
     end
   end
 
@@ -122,12 +122,12 @@ RSpec.describe EyeManager do
           .to eq 'unknown'
     end
   end
-  
+
   describe ".list_apps" do
-    it "should return empty list if Eye is not running" do 
+    it "should return empty list if Eye is not running" do
 	  expect(EyeManager.list_apps).to match_array []
-    end 
-    
+    end
+
     it "should list the apps" do
       EyeManager.start config: 'spec/eye.test.rb', application: 'test'
       EyeManager.start config: 'spec/eye.test2.rb', application: 'test2'
